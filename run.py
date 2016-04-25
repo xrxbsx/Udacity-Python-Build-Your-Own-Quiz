@@ -145,5 +145,6 @@ while current <= total:
 		print('Wrong Answer!')
 	print('\n--------------------------------------------------------------------------------\n')
 
+print(levelTemplate.substitute(substitution))
 print('Congradulation! You have passed the quiz!')
 
