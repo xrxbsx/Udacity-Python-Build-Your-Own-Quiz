@@ -94,7 +94,11 @@ def check_answer(answer, question, solution):
 	  answer: string --> answer that user typed
 	question: string --> the current question key in solution
 	solution: string --> the solution dictionary 
+	return True if answer is the solution of the question
+		  False if answer is not the solution
 	'''
+	#  first check if the [question] key is a valid key
+	#  if valid, get the value of this key and compare it with the solution
 	if solution.get(question) != None and solution[question] == answer:
 		return True
 	else:
@@ -106,49 +110,57 @@ def get_level():
 	ask the user which level to play,
 	get the corresponding level template and solution,
 	return a tuple (level, solution)
+	   level: Template --> the corresponding string template of the user selected level
+	solution: dict     --> the solution dictionary of the corresponding level
 	'''
 	print('Please choose a difficulty level from easy / medium / hard')
-	levelTemplate = None
-	solution = None
-	while(solution == None):
+	levelTemplate = None		#  refers to the string template, initialized as None
+	solution = None				#  refers to the dict solution,   initialized as None
+	while(solution == None):	#  when there is no solution, keep asking user to select a valid level
 		level = input()
 		if(level == 'easy'):
+			#  easy --> level 1
 			levelTemplate = Template(level1)
 			solution = solution1
 		elif(level == 'medium'):
+			#  medium --> level 2
 			levelTemplate = Template(level2)
 			solution = solution2
 		elif(level == 'hard'):
+			#  hard --> level 3
 			levelTemplate = Template(level3)
 			solution = solution3
 		else:
-			print('Please choose a read level that actually exists!')
+			#  user didn't type any valid level
+			print('Please choose a real level that actually exists!')
 	print('You choosed level ' + level)
 	return (levelTemplate, solution)
 
 
+def main():
+	levelTemplate, solution = get_level()	#  the string template of the selected level
+	current = 1				#  current question number
+	total = len(solution)	#  the total question numbers, is the size of solution
 
-levelTemplate, solution = get_level()	#  the string template of the selected level
-current = 1
-total = len(solution)
+	while current <= total:
+		string = levelTemplate.substitute(substitution);
+		question = 'What should go in blank number ' + str(current) + '?'
+		print(string)
+		print(question)
+		readAnswer = input()
+		blank = 'blank'+str(current)	#  get the key corresponding to the current question
+		if check_answer(readAnswer, blank, solution):
+			# right answer
+			substitution[blank] = readAnswer	#  modify the template, replace blanks __x__ with answers
+			print('Right Answer!')
+			current += 1
+		else:
+			# wrong answer
+			print('Wrong Answer!')
+		print('\n--------------------------------------------------------------------------------\n')
 
-while current <= total:
-	string = levelTemplate.substitute(substitution);
-	question = 'What should go in blank number ' + str(current) + '?'
-	print(string)
-	print(question)
-	readAnswer = input()
-	blank = 'blank'+str(current)
-	if check_answer(readAnswer, blank, solution):
-		# right answer
-		substitution[blank] = readAnswer
-		print('Right Answer!')
-		current += 1
-	else:
-		# wrong answer
-		print('Wrong Answer!')
-	print('\n--------------------------------------------------------------------------------\n')
+	print(levelTemplate.substitute(substitution))
+	print('Congradulation! You have passed the quiz!')
 
-print(levelTemplate.substitute(substitution))
-print('Congradulation! You have passed the quiz!')
 
+main()
